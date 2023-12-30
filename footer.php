@@ -3,9 +3,8 @@
             <div class="row">
             <div class="col-12 col-md">
                 <img class="mb-2" src="assets/images/logo-tx-preto.png" alt="" height="30">
-                <small class="d-block mb-3 text-muted">&copy; Todos os direitos reservados - 2023-<?=date("Y")?></small>
-            </div>
-            <div class="col-6 col-md"></div>
+                <p class="d-block float-right mt-3 text-muted">Version: Beta01</p>
+                <p class="d-block mb-3 text-muted">&copy; Todos os direitos reservados - 2023-<?=date("Y")?></p>
             </div>
         </footer>
     </div>

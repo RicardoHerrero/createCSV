@@ -53,6 +53,7 @@ function salvarArquivo($arquivo){
         $extensao = pathinfo($arquivo['name'], PATHINFO_EXTENSION);
         $caminhoCompleto = $diretorioDestino . $nomeOriginal . '.' . $extensao;
         $contador = 1;
+        $nomeOriginal2 = $nomeOriginal . '_' . $contador;
         while (file_exists($caminhoCompleto)) {
             $nomeOriginal2 = $nomeOriginal . '_' . $contador;
             $caminhoCompleto = $diretorioDestino . $nomeOriginal2 . '.' . $extensao;

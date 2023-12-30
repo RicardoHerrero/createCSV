@@ -1,8 +1,6 @@
 <?php
-
-
 $erro = "";
-
+include "config.php";
 include "funcoes.php";
 include "header.php";
 

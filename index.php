@@ -1,4 +1,5 @@
 <?php
+include "config.php";
 include "header.php";
 ?>
 
@@ -12,7 +13,7 @@ include "header.php";
                     <p class="card-text">Enviar um novo arquivo para Geração do CSV.</p>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="btn-group">
-                            <a href="./enviar-arquivo" role="button" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-paper-plane"></i> Enviar Arquivo</a>
+                            <a href="enviar-arquivo" role="button" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-paper-plane"></i> Enviar Arquivo</a>
                         </div>
                         <small class="text-muted"></small>
                     </div>
@@ -26,7 +27,7 @@ include "header.php";
                     <p class="card-text">Visualizar os arquivos já gerados.</p>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="btn-group">
-                            <a href="./lista-arquivos" role="button" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-clock-rotate-left"></i> Acessar Histórico</a>
+                            <a href="lista-arquivos" role="button" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-clock-rotate-left"></i> Acessar Histórico</a>
                         </div>
                         <small class="text-muted"></small>
                     </div>

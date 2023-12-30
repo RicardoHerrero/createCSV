@@ -1,5 +1,4 @@
 <?php
-
 include 'config.php';
 include "header.php";
 
@@ -34,9 +33,9 @@ try {
                     <th scope="row"><?=$row['loteid']?></th>
                     <td><?=$row['arquivo']?></td>
                     <td><?=$row['dataregistro']?></td>
-                    <td><?=$row['totalbeneficiarios']?></td>
+                    <td class="text-right pr-4"><?=($row['status']!="1")?number_format($row['totalbeneficiarios'],0,",","."):'-'?></td>
                     <td><span class="badge badge-<?=$row['statusColor']?>"><?=$row['statusText']?></span></td>
-                    <td><a class="btn btn-primary btn-sm" href="./processar-arquivo/<?=$row['loteid']?>" role="button"><i class="fa-solid fa-gears"></i> Processar Arquivo</a></td>
+                    <td><a class="btn btn-primary btn-sm" href="processar-arquivo/<?=$row['loteid']?>" role="button"><i class="fa-solid fa-gears"></i> Processar Arquivo</a></td>
                 </tr>
             <?php
             }?>
