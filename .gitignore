@@ -1,0 +1,5 @@
+# Ignorar o arquivo config.php
+config.php
+
+# Ignorar todos os arquivos na pasta arquivosRecebidos
+arquivosRecebidos/*

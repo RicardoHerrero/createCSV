@@ -1,0 +1,8 @@
+RewriteEngine On
+
+RewriteRule %{REQUEST_FILENAME} !-f
+RewriteRule %{REQUEST_FILENAME} !-d
+
+RewriteRule ^enviar-arquivo/?$ upload-file.php [QSA,L]
+RewriteRule ^lista-arquivos/?$ listagem-files.php [QSA,L]
+RewriteRule ^/?$ index.php [QSA,L]
