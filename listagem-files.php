@@ -1,5 +1,6 @@
 <?php
 include 'config.php';
+include 'funcoes.php';
 include "header.php";
 
 try {
@@ -40,9 +41,12 @@ try {
                         if($row['status']=="1"){?>
                             <a class="btn btn-primary btn-sm" href="processar-arquivo/<?=$row['loteid']?>" role="button"><i class="fa-solid fa-gears"></i> Processar Arquivo</a>
                         <?php
-                        }else if($row['status']=="2"){?>
-                            <a class="btn btn-success btn-sm" href="download-arquivo/<?=$row['loteid']?>/success" role="button"><i class="fa-solid fa-check"></i> Sucesso</a>
-                            <a class="btn btn-danger btn-sm" href="download-arquivo/<?=$row['loteid']?>/error" role="button"><i class="fa-solid fa-triangle-exclamation"></i> Erro</a>
+                        }else if($row['status']=="2"){
+                            $sucesso = contarResultado($row['loteid'],2);
+                            $erro = contarResultado($row['loteid'],1);
+                        ?>
+                            <a class="btn btn-success btn-sm <?=($sucesso==0)?'disabled':''?>" title="Total de Registros: <?=$sucesso?>" href="download-arquivo/<?=$row['loteid']?>/success" role="button"><i class="fa-solid fa-check"></i> Sucesso</a>
+                            <a class="btn btn-danger btn-sm <?=($erro==0)?'disabled':''?>" title="Total de Registros: <?=$erro?>" href="download-arquivo/<?=$row['loteid']?>/error" role="button"><i class="fa-solid fa-triangle-exclamation"></i> Erro</a>
                         <?php
                         }?>
                         

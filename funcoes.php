@@ -65,3 +65,26 @@ function salvarArquivo($arquivo){
         throw new LogicException('Erro durante o upload do arquivo. Código de erro: ' . $arquivo['error'], 2);
     }
 }
+
+function contarResultado($loteid,$status){
+    include "config.php";
+
+    try {
+
+        $pdo = new PDO("mysql:host={$confDB['host']};dbname={$confDB['bancoDeDados']};charset=utf8", $confDB['usuario'], $confDB['senha']);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);    
+        
+        //INSERT NO BANCO
+        $sql = "SELECT COUNT(beneficiarioid) as total FROM Beneficiarios WHERE status=".$status." AND loteid=".$loteid;
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado['total'];
+
+    } catch (LogicException $e) {
+        return 0;
+
+    } catch (PDOException $e) {
+        return 0;
+    }
+}

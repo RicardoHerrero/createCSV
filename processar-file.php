@@ -2,7 +2,7 @@
 
 include 'config.php';
 include "header.php";
-$limite = 2;
+$limite = 10;
 
 try {
     $pdo = new PDO("mysql:host={$confDB['host']};dbname={$confDB['bancoDeDados']};charset=utf8", $confDB['usuario'], $confDB['senha']);
