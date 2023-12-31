@@ -2,6 +2,7 @@
 
 include 'config.php';
 include "header.php";
+$limite = 2;
 
 try {
     $pdo = new PDO("mysql:host={$confDB['host']};dbname={$confDB['bancoDeDados']};charset=utf8", $confDB['usuario'], $confDB['senha']);
@@ -33,7 +34,7 @@ $posicoes = [
 ];
 $arquivo = [];
 foreach ($linhas as $i => $linha) {
-    if ($i>0 && $i<=3) {
+    if ($i>0 && $i<=$limite) {
         $registro = [];
         foreach ($posicoes as $campo => $posicao) {
             $registro[$campo] = trim(substr($linha, $posicao['start'], $posicao['length']));
@@ -58,7 +59,7 @@ $jsonArquivo = json_encode($arquivo);
 
 <div class="alert alert-danger text-center" role="alert" id="boxResume" style="display:none">
   <center id="imgLoading"><img src="assets/images/loading.gif" width="100"/></center>
-  <span id="messagemAtividade">Atenção, está ação pode demorar muitos minutos. Eh preciso paciência.</span>
+  <span id="messagemAtividade"><i class="fa-solid fa-circle-exclamation"></i> Atenção, está ação pode demorar muitos minutos. Eh preciso paciência.</span>
   <span id="downloadFile"></span>
   <div id="progressBar" class="progress mt-3">
     <div class="progress-bar progress-bar-striped progress-bar-animated" id="loadingBar" style="width:0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
@@ -82,14 +83,14 @@ $jsonArquivo = json_encode($arquivo);
   <tbody>
     <?php
     foreach ($linhas as $i => $linha) {
-        if ($i>0 && $i<=3) {
+        if ($i>0 && $i<=$limite) {
             echo '<tr>';
             echo '<th scope="row">'.$i.'</th>';
             foreach ($posicoes as $campo => $posicao) {
-                echo '<td>'.trim(substr($linha, $posicao['start'], $posicao['length'])).'</td>';                
+                echo '<td><span id="indice'.$i.'-'.$campo.'">'.trim(substr($linha, $posicao['start'], $posicao['length'])).'</span></td>';                
             }
-            echo '<td>-</td>';
-            echo '<td>-</td>';
+            echo '<td><span id="indice'.$i.'-telefone">-</span></td>';
+            echo '<td><span id="indice'.$i.'-email">-</span></td>';
             echo '<td><span id="indice'.$i.'-carteirinha">-</span></td>';
             echo '<td><span id="indice'.$i.'-status" class="badge badge-warning">Pendente</span></td>';
             echo '</tr>';
@@ -134,18 +135,37 @@ function chamarAPI(indice) {
 
 async function processarIndices(totalIndices) {
   
+  var nome = ""
   var telefone = ""
   var email = ""
   var carteirinha = ""
   var loading = 0;
+  var valor = ""
+  var vencimento = ""
   
   var h=0;
+
+  var sql = "INSERT INTO Beneficiarios (loteid,status,nome,email,contato,carteirinha,valor,vencimento) VALUES ";
+
   for (const indice of jsonArquivoJS) {
     try {
       h++;
       const resultado = await chamarAPI(indice);
+      nome = resultado.data.nome;
+      telefone = (resultado.data.telefone == undefined )? '' : resultado.data.telefone ;
+      email = (resultado.data.email == undefined )? '' : resultado.data.email ;
       carteirinha = resultado.data.carteirinha;
+      status = (telefone!="")? 2 : 1;
+      valor = indice['valor']/100;
+      vencimento = formatarStringParaData(indice['dataVencimento'])
 
+      sql += `(<?=$_GET['loteid']?>, ${status} , '${nome}', '${email}', '${telefone}', '${carteirinha}', '${valor}', ${vencimento} ),`;
+
+      document.getElementById("indice"+h+"-dataVencimento").textContent = vencimento;
+      document.getElementById("indice"+h+"-valor").textContent = valor;
+      document.getElementById("indice"+h+"-nome").textContent = nome;
+      document.getElementById("indice"+h+"-telefone").textContent = telefone;
+      document.getElementById("indice"+h+"-email").textContent = email;
       document.getElementById("indice"+h+"-carteirinha").textContent = carteirinha;
       document.getElementById("indice"+h+"-status").textContent = 'Concluído';
       document.getElementById("indice"+h+"-status").classList.remove("badge-warning");
@@ -160,7 +180,8 @@ async function processarIndices(totalIndices) {
       barraLoading.setAttribute("aria-valuenow", loading);
 
       if( loading == 100 ){
-        finalizarAtividade()
+        sql += ";"
+        finalizarAtividade(sql)
         break;
       } 
 
@@ -176,17 +197,30 @@ function iniciarAtividade(){
     document.getElementById('messageTime').style.display = 'none'; 
     document.getElementById('gerarArquivo').style.display = 'none'; 
     document.getElementById('boxResume').style.display = 'block'; 
-    processarIndices(3);
+    processarIndices(<?=$limite?>);
 }
 
-function finalizarAtividade(){
+function finalizarAtividade(sql){
     document.getElementById('imgLoading').style.display = 'none'
-    document.getElementById('messagemAtividade').innerHTML = "Acabouu!.. Vou preparar o arquivo CSV para download."
+    document.getElementById('messagemAtividade').innerHTML = '<i class="fa-regular fa-circle-check"></i> Acabouu!.. Vou preparar o arquivo CSV para download.'
     document.getElementById('loadingBar').classList.remove("progress-bar-animated")
     document.getElementById('loadingBar').classList.add("bg-success")
     document.getElementById('boxResume').classList.add("alert-success")
     document.getElementById('boxResume').classList.remove("alert-danger")
     document.getElementById('progressBar').style.display = 'none'
+
+    sql = sql.replace('),;',');')
+    console.log(sql)
+    //SALVANDO NO BANCO DE DADOS
+
+}
+
+function formatarStringParaData(str) {
+    let dia = str.substring(0, 2);
+    let mes = str.substring(2, 4);
+    let ano = str.substring(4, 6);
+    ano = "20" + ano;
+    return `${ano}-${mes}-${dia}`;
 }
 
 document.getElementById('gerarArquivo').addEventListener('click', iniciarAtividade);
