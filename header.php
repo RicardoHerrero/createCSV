@@ -5,20 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-
+    <link rel="icon" type="image/png" href="https://viva.care/img/favicon.png"/>
     <base href="<?=$config['urlBase']?>">
-
     <title>Viva.Care - Gerador de CSV</title>
-
     <link href="https://getbootstrap.com.br/docs/4.1/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="assets/css/example.css" rel="stylesheet"/>
-    <link rel="icon" type="image/png" href="https://viva.care/img/favicon.png"/>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">  
+    <script src="assets/js/jquery-3.6.0.js"></script>
   </head>
 
   <body>
-
     <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
       <h5 class="my-0 mr-md-auto font-weight-normal"><img class="logo" src="assets/images/logo-tx-preto.png" /></h5>
       <nav class="my-2 my-md-0 mr-md-3">

@@ -35,7 +35,18 @@ try {
                     <td><?=$row['dataregistro']?></td>
                     <td class="text-right pr-4"><?=($row['status']!="1")?number_format($row['totalbeneficiarios'],0,",","."):'-'?></td>
                     <td><span class="badge badge-<?=$row['statusColor']?>"><?=$row['statusText']?></span></td>
-                    <td><a class="btn btn-primary btn-sm" href="processar-arquivo/<?=$row['loteid']?>" role="button"><i class="fa-solid fa-gears"></i> Processar Arquivo</a></td>
+                    <td>
+                        <?php
+                        if($row['status']=="1"){?>
+                            <a class="btn btn-primary btn-sm" href="processar-arquivo/<?=$row['loteid']?>" role="button"><i class="fa-solid fa-gears"></i> Processar Arquivo</a>
+                        <?php
+                        }else if($row['status']=="2"){?>
+                            <a class="btn btn-success btn-sm" href="download-arquivo/<?=$row['loteid']?>/success" role="button"><i class="fa-solid fa-check"></i> Sucesso</a>
+                            <a class="btn btn-danger btn-sm" href="download-arquivo/<?=$row['loteid']?>/error" role="button"><i class="fa-solid fa-triangle-exclamation"></i> Erro</a>
+                        <?php
+                        }?>
+                        
+                    </td>
                 </tr>
             <?php
             }?>

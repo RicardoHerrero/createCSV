@@ -60,7 +60,7 @@ $jsonArquivo = json_encode($arquivo);
 <div class="alert alert-danger text-center" role="alert" id="boxResume" style="display:none">
   <center id="imgLoading"><img src="assets/images/loading.gif" width="100"/></center>
   <span id="messagemAtividade"><i class="fa-solid fa-circle-exclamation"></i> Atenção, está ação pode demorar muitos minutos. Eh preciso paciência.</span>
-  <span id="downloadFile"></span>
+  <span id="downloadArquivoSpan" style="display:none"><button type="button" id="downloadArquivo" class="btn btn-success mt-2"><i class="fa-solid fa-cloud-arrow-down"></i> CSV Gerado com Sucesso</button></span>
   <div id="progressBar" class="progress mt-3">
     <div class="progress-bar progress-bar-striped progress-bar-animated" id="loadingBar" style="width:0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
   </div>
@@ -110,6 +110,36 @@ jsonArquivoJS.forEach(function(file) {
     console.log('Nome:', file.nome, ', Valor:', file.valor);
 });*/
 
+function chamarAPIINSERT(json) {
+    $.ajax({
+      url: 'apiInsertBeneficiarios.php',
+      method: 'POST',
+      dataType: 'json',
+      data: {
+            json: json,
+            loteid: <?=$_GET['loteid']?>
+      },
+      success: function(data) {
+        console.log('Dados recebidos:', data);
+      },
+      error: function(error) {
+        console.error('Erro na requisição:', error);
+        alert('Erro na requisição:', error);
+      }
+    });
+}
+async function gerarCSV(json) {
+    try {
+        const csv = await chamarAPIINSERT(json);
+
+        console.log(csv);
+
+    } catch (erro) {
+      // Trata qualquer erro que ocorra durante a chamada da API
+      console.error(`Erro no CSV:`, erro.message);
+    }
+}
+
 function chamarAPI(indice) {
     const apiUrl = 'apiBlueMed.php';
     var requestOptions = {
@@ -142,10 +172,10 @@ async function processarIndices(totalIndices) {
   var loading = 0;
   var valor = ""
   var vencimento = ""
+
+  let matriz = [];
   
   var h=0;
-
-  var sql = "INSERT INTO Beneficiarios (loteid,status,nome,email,contato,carteirinha,valor,vencimento) VALUES ";
 
   for (const indice of jsonArquivoJS) {
     try {
@@ -159,7 +189,18 @@ async function processarIndices(totalIndices) {
       valor = indice['valor']/100;
       vencimento = formatarStringParaData(indice['dataVencimento'])
 
-      sql += `(<?=$_GET['loteid']?>, ${status} , '${nome}', '${email}', '${telefone}', '${carteirinha}', '${valor}', ${vencimento} ),`;
+      matrizLinha = [
+        <?=$_GET['loteid']?>, 
+        `${status}`, 
+        `${nome}`, 
+        `${email}`, 
+        `${telefone}`, 
+        `${carteirinha}`, 
+        `${valor}`, 
+        `${vencimento}`
+      ]
+
+      matriz.push(matrizLinha)
 
       document.getElementById("indice"+h+"-dataVencimento").textContent = vencimento;
       document.getElementById("indice"+h+"-valor").textContent = valor;
@@ -180,8 +221,7 @@ async function processarIndices(totalIndices) {
       barraLoading.setAttribute("aria-valuenow", loading);
 
       if( loading == 100 ){
-        sql += ";"
-        finalizarAtividade(sql)
+        finalizarAtividade(matriz)
         break;
       } 
 
@@ -200,7 +240,7 @@ function iniciarAtividade(){
     processarIndices(<?=$limite?>);
 }
 
-function finalizarAtividade(sql){
+function finalizarAtividade(matriz){
     document.getElementById('imgLoading').style.display = 'none'
     document.getElementById('messagemAtividade').innerHTML = '<i class="fa-regular fa-circle-check"></i> Acabouu!.. Vou preparar o arquivo CSV para download.'
     document.getElementById('loadingBar').classList.remove("progress-bar-animated")
@@ -208,11 +248,11 @@ function finalizarAtividade(sql){
     document.getElementById('boxResume').classList.add("alert-success")
     document.getElementById('boxResume').classList.remove("alert-danger")
     document.getElementById('progressBar').style.display = 'none'
+    document.getElementById('downloadArquivoSpan').style.display = 'block'
 
-    sql = sql.replace('),;',');')
-    console.log(sql)
+    console.log(matriz)
     //SALVANDO NO BANCO DE DADOS
-
+    const insert = gerarCSV(matriz)
 }
 
 function formatarStringParaData(str) {
@@ -223,7 +263,12 @@ function formatarStringParaData(str) {
     return `${ano}-${mes}-${dia}`;
 }
 
+function reloadAtividade(){
+    window.location.href = "lista-arquivos"
+}
+
 document.getElementById('gerarArquivo').addEventListener('click', iniciarAtividade);
+document.getElementById('downloadArquivo').addEventListener('click', reloadAtividade);
 </script>
 
 <?php
