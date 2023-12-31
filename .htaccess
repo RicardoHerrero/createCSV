@@ -6,4 +6,7 @@ RewriteRule %{REQUEST_FILENAME} !-d
 RewriteRule ^enviar-arquivo/?$ upload-file.php [QSA,L]
 RewriteRule ^lista-arquivos/?$ listagem-files.php [QSA,L]
 RewriteRule ^processar-arquivo/([0-9-]+)?$ processar-file.php?loteid=$1 [QSA,L]
+
+RewriteRule ^download-arquivo/([0-9-]+)/success/?$ download-file.php?loteid=$1&status=2 [QSA,L]
+RewriteRule ^download-arquivo/([0-9-]+)/error/?$ download-file.php?loteid=$1&status=1 [QSA,L]
 RewriteRule ^/?$ index.php [QSA,L]
