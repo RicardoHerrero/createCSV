@@ -2,7 +2,7 @@
 
 include 'config.php';
 include "header.php";
-$limite = 10;
+$limite = 5;
 
 try {
     $pdo = new PDO("mysql:host={$confDB['host']};dbname={$confDB['bancoDeDados']};charset=utf8", $confDB['usuario'], $confDB['senha']);
@@ -26,6 +26,7 @@ $linhas = file($nomeArquivo, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 if ($linhas === false) exit("ERROR... Cod. 04 = Não foi possível ler o arquivo $nomeArquivo.");
 
 $numLinhas = count($linhas)-2;
+//$limite = $numLinhas;
 
 $posicoes = [
     'dataVencimento' => ['start' => 101, 'length' => 6],
@@ -182,8 +183,9 @@ async function processarIndices(totalIndices) {
       h++;
       const resultado = await chamarAPI(indice);
       nome = resultado.data.nome;
-      telefone = (resultado.data.telefone == undefined )? '' : resultado.data.telefone ;
+      telefone = (resultado.data.ddd_cel == undefined || resultado.data.celular == undefined )? '' : resultado.data.ddd_cel+resultado.data.celular ;
       email = (resultado.data.email == undefined )? '' : resultado.data.email ;
+      email = email.toLowerCase();
       carteirinha = resultado.data.carteirinha;
       status = (telefone!="")? 2 : 1;
       valor = indice['valor']/100;
