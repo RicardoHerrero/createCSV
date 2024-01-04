@@ -26,7 +26,7 @@ $linhas = file($nomeArquivo, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 if ($linhas === false) exit("ERROR... Cod. 04 = Não foi possível ler o arquivo $nomeArquivo.");
 
 $numLinhas = count($linhas)-2;
-//$limite = $numLinhas;
+$limite = $numLinhas;
 
 $posicoes = [
     'dataVencimento' => ['start' => 101, 'length' => 6],
